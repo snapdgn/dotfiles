@@ -11,10 +11,12 @@ opt.mouse = 'a'
 opt.title = true
 opt.clipboard = 'unnamedplus'
 opt.swapfile = false
+opt.filetype = "on"
 opt.undofile = true
 opt.cmdheight = 1
 opt.termguicolors = true
 opt.showmode = false
+opt.so = 20
 
 -- timeout stuff
 opt.updatetime = 300
@@ -46,11 +48,15 @@ opt.showmatch = true
 opt.smartcase = true
 --opt.whichwrap:append "<>[]hl"
 
+--folding
+opt.foldmethod = 'indent'
+opt.foldexpr = 'nvim_treesitter#foldexpr()'
+
 -- remove intro
 opt.shortmess:append "sI"
 
 --miscs
-opt.completeopt = {'menuone', 'noselect', 'noinsert'}
+opt.completeopt = { 'menuone', 'noselect', 'noinsert' }
 
 -- disable inbuilt vim plugins
 local built_ins = {
@@ -75,5 +81,5 @@ local built_ins = {
 }
 
 for _, plugin in pairs(built_ins) do
-   g["loaded_" .. plugin] = 1
+  g["loaded_" .. plugin] = 1
 end

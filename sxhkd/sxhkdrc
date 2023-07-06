@@ -4,7 +4,7 @@
 
 # terminal emulator
 super + Return
-    st
+	st 
 
 # program launcher
 super + d 
@@ -131,13 +131,11 @@ super + b
 
 alt + f
 	pcmanfm
-alt + l
-	leafpad
 alt + t
-    alacritty
+   alacritty 
 
-ctrl + shift + p
-	flameshot gui
+ctrl + p
+  flameshot gui
 super + shift + x
 	betterlockscreen -l dim
  

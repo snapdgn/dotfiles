@@ -28,18 +28,18 @@ if present then
       },
       prompt_prefix = "   ",
       layout_config = {
-      horizontal = {
-        prompt_position = "top",
-        preview_width = 0.55,
-        results_width = 0.8,
+        horizontal = {
+          prompt_position = "top",
+          preview_width = 0.55,
+          results_width = 0.8,
+        },
+        vertical = {
+          mirror = false,
+        },
+        width = 0.87,
+        height = 0.80,
+        preview_cutoff = 120,
       },
-      vertical = {
-        mirror = false,
-      },
-      width = 0.87,
-      height = 0.80,
-      preview_cutoff = 120,
-    },
       pickers = {
         find_files = {
           theme = "ivy",
@@ -58,7 +58,7 @@ if present then
       -- borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
       borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
     },
-      extensions_list = { "themes", "terms" },
+    extensions_list = { "themes", "terms" },
   }
 end
 
@@ -74,9 +74,9 @@ if present then
     disable_netrw = true,
     hijack_cursor = true,
     update_cwd = true,
---    update_to_buf_dir = {
---      auto_open = false,
---    },
+    --    update_to_buf_dir = {
+    --      auto_open = false,
+    --    },
   }
   vim.g.nvim_tree_indent_markers = 1
 end
@@ -85,51 +85,51 @@ end
 local present, luasnip = pcall(require, 'luasnip')
 if present then
   local present, friendly_snippets = pcall(require, 'luasnip.loaders.from_vscode')
-  if present then 
+  if present then
     friendly_snippets.load()
   end
 end
 
 -- Rust analyzer setup
-local nvim_lsp = require'lspconfig'
+local nvim_lsp = require 'lspconfig'
 
 local opts = {
-    tools = { -- rust-tools options
-        autoSetHints = true,
-        RustHoverActions = true,
-        --hover_with_actions = true,
-        inlay_hints = {
-            show_parameter_hints = false,
-            parameter_hints_prefix = "",
-            other_hints_prefix = "",
+  tools = {
+    -- rust-tools options
+    autoSetHints = true,
+    RustHoverActions = true,
+    --hover_with_actions = true,
+    inlay_hints = {
+      show_parameter_hints = false,
+      parameter_hints_prefix = "",
+      other_hints_prefix = "",
+    },
+  },
+  -- all the opts to send to nvim-lspconfig
+  -- these override the defaults set by rust-tools.nvim
+  -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+  server = {
+    -- on_attach is a callback called when the language server attachs to the buffer
+    -- on_attach = on_attach,
+    settings = {
+      -- to enable rust-analyzer settings visit:
+      -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+      ["rust-analyzer"] = {
+        -- enable clippy on save
+        checkOnSave = {
+          command = "clippy"
         },
-    },
-
-    -- all the opts to send to nvim-lspconfig
-    -- these override the defaults set by rust-tools.nvim
-    -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-    server = {
-        -- on_attach is a callback called when the language server attachs to the buffer
-        -- on_attach = on_attach,
-        settings = {
-            -- to enable rust-analyzer settings visit:
-            -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
-            ["rust-analyzer"] = {
-                -- enable clippy on save
-                checkOnSave = {
-                    command = "clippy"
-                },
-            }
-        }
-    },
+      }
+    }
+  },
 }
 
 require('rust-tools').setup(opts)
 require('rust-tools').inlay_hints.enable()
 require('rust-tools').runnables.runnables()
 -- Command:
--- RustHoverActions 
-require'rust-tools'.hover_actions.hover_actions()
+-- RustHoverActions
+require 'rust-tools'.hover_actions.hover_actions()
 
 -- Cmp Completion
 local present, cmp = pcall(require, 'cmp')
@@ -138,7 +138,7 @@ if present then
     -- Enable LSP snippets
     snippet = {
       expand = function(args)
-          vim.fn["vsnip#anonymous"](args.body)
+        vim.fn["vsnip#anonymous"](args.body)
       end,
     },
     mapping = {
@@ -178,10 +178,124 @@ if present then
   })
 end
 
---autoformat with current active LSP
-vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
--- rystfmt on save
+--autoformat with current active LSP (old)
+--vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
 
+--vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
+
+--  new way for autoformatting
+-- START COPYPASTA https://github.com/neovim/neovim/commit/5b04e46d23b65413d934d812d61d8720b815eb1c
+local util = require 'vim.lsp.util'
+--- Formats a buffer using the attached (and optionally filtered) language
+--- server clients.
+---
+--- @param options table|nil Optional table which holds the following optional fields:
+---     - formatting_options (table|nil):
+---         Can be used to specify FormattingOptions. Some unspecified options will be
+---         automatically derived from the current Neovim options.
+---         @see https://microsoft.github.io/language-server-protocol/specification#textDocument_formatting
+---     - timeout_ms (integer|nil, default 1000):
+---         Time in milliseconds to block for formatting requests. Formatting requests are current
+---         synchronous to prevent editing of the buffer.
+---     - bufnr (number|nil):
+---         Restrict formatting to the clients attached to the given buffer, defaults to the current
+---         buffer (0).
+---     - filter (function|nil):
+---         Predicate to filter clients used for formatting. Receives the list of clients attached
+---         to bufnr as the argument and must return the list of clients on which to request
+---         formatting. Example:
+---
+---         <pre>
+---         -- Never request typescript-language-server for formatting
+---         vim.lsp.buf.format {
+---           filter = function(clients)
+---             return vim.tbl_filter(
+---               function(client) return client.name ~= "tsserver" end,
+---               clients
+---             )
+---           end
+---         }
+---         </pre>
+---
+---     - id (number|nil):
+---         Restrict formatting to the client with ID (client.id) matching this field.
+---     - name (string|nil):
+---         Restrict formatting to the client with name (client.name) matching this field.
+vim.lsp.buf.format = function(options)
+  options = options or {}
+  local bufnr = options.bufnr or vim.api.nvim_get_current_buf()
+  local clients = vim.lsp.buf_get_clients(bufnr)
+
+  if options.filter then
+    clients = options.filter(clients)
+  elseif options.id then
+    clients = vim.tbl_filter(
+      function(client) return client.id == options.id end,
+      clients
+    )
+  elseif options.name then
+    clients = vim.tbl_filter(
+      function(client) return client.name == options.name end,
+      clients
+    )
+  end
+
+  clients = vim.tbl_filter(
+    function(client) return client.supports_method 'textDocument/formatting' end,
+    clients
+  )
+
+  if #clients == 0 then
+    vim.notify '[LSP] Format request failed, no matching language servers.'
+  end
+
+  local timeout_ms = options.timeout_ms or 1000
+  for _, client in pairs(clients) do
+    local params = util.make_formatting_params(options.formatting_options)
+    local result, err = client.request_sync('textDocument/formatting', params, timeout_ms, bufnr)
+    if result and result.result then
+      util.apply_text_edits(result.result, bufnr, client.offset_encoding)
+    elseif err then
+      vim.notify(string.format('[LSP][%s] %s', client.name, err), vim.log.levels.WARN)
+    end
+  end
+end
+-- END COPYPASTA
+
+
+vim.api.nvim_create_augroup('LspFormatting', { clear = true })
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*',
+  group = 'LspFormatting',
+  callback = function()
+    vim.lsp.buf.format {
+      timeout_ms = 2000,
+      filter = function(clients)
+        return vim.tbl_filter(function(client)
+          return pcall(function(_client)
+            return _client.config.settings.autoFixOnSave or false
+          end, client) or false
+        end, clients)
+      end
+    }
+  end
+})
+
+-- rystfmt on save
+--
+-- start nerdtree automatically
+-- Start NERDTree and put the cursor back in the other window.
+
+--autocmd VimEnter * NERDTree | wincmd p
+--vim.cmd [[ autocmd! VimEnter * NERDTree]]
+--
+--NVIMTREE configs
+require("nvim-tree").setup { -- BEGIN_DEFAULT_OPTS
+  on_attach = "enable",
+}                            -- END_DEFAULT_OPTS
+
+
+-- NVIMTREE setup ends
 ----------------------------LSP UI START-----------------------------
 
 -- /BORDER CUSTOMIZATION START / --
@@ -200,24 +314,25 @@ vim.cmd [[autocmd! ColorScheme * highlight TelescopeSelection guifg=#D79921 gui=
 
 
 local border = {
-      {"🭽", "FloatBorder"},
-      {"▔", "FloatBorder"},
-      {"🭾", "FloatBorder"},
-      {"▕", "FloatBorder"},
-      {"🭿", "FloatBorder"},
-      {"▁", "FloatBorder"},
-      {"🭼", "FloatBorder"},
-      {"▏", "FloatBorder"},
+  { "🭽", "FloatBorder" },
+  { "▔",  "FloatBorder" },
+  { "🭾", "FloatBorder" },
+  { "▕",  "FloatBorder" },
+  { "🭿", "FloatBorder" },
+  { "▁",  "FloatBorder" },
+  { "🭼", "FloatBorder" },
+  { "▏",  "FloatBorder" },
 }
 
 -- LSP settings (for overriding per client)
-local handlers =  {
-  ["textDocument/hover"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = border}),
-  ["textDocument/signatureHelp"] =  vim.lsp.with(vim.lsp.handlers.signature_help, {border = border }),
+local handlers = {
+  ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = border }),
+  ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border }),
 }
 
 -- Do not forget to use the on_attach function
 --require 'lspconfig'.myserver.setup { handlers=handlers }
+
 
 -- To instead override globally
 local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
@@ -295,25 +410,52 @@ vim.lsp.handlers["textDocument/definition"] = goto_definition('split')
 -- uncomment to display inline errors
 --
 --vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-  --virtual_text = {
-    --prefix = '●', -- Could be '●', '▎', 'x'
-  --}
+--virtual_text = {
+--prefix = '●', -- Could be '●', '▎', 'x'
+--}
 --})
 
 
 ----------------------------LSP UI END------------------------------------
 --
--- Language Server Support
-require'lspconfig'.rust_analyzer.setup{}
-require'lspconfig'.clangd.setup{}
-require'lspconfig'.pyright.setup{}
-require'lspconfig'.gopls.setup{}
-require'lspconfig'.tsserver.setup{}
-require'lspconfig'.ruby_ls.setup{}
+require("toggleterm").setup {
+  -- size can be a number or function which is passed the current terminal
+  open_mapping = [[<c-\>]],
+  hide_numbers = true,     -- hide the number column in toggleterm buffers
+  shade_filetypes = {},
+  autochdir = false,       -- when neovim changes it current directory the terminal will change it's own when next it's opened
+  shade_terminals = false, -- NOTE: this option takes priority over highlights specified so if you specify Normal highlights you should set this to false
+  --shading_factor = '<number>', -- the percentage by which to lighten terminal background, default: -30 (gets multiplied by -3 if background is light)
+  start_in_insert = true,
+  insert_mappings = true,   -- whether or not the open mapping applies in insert mode
+  terminal_mappings = true, -- whether or not the open mapping applies in the opened terminals
+  persist_size = true,
+  persist_mode = true,      -- if set to true (default) the previous terminal mode will be remembered
+  direction = 'float',
+  close_on_exit = true,     -- close the terminal window when the process exits
+  shell = vim.o.shell,      -- change the default shell
+  auto_scroll = false,      -- automatically scroll to the bottom on terminal output
+  -- This field is only relevant if direction is set to 'float'
+  winbar = {
+    enabled = false,
+    name_formatter = function(term) --  term: Terminal
+      return term.name
+    end
+  }
+}
+
+
+
+
+
+require("nvim-tree").setup()
+
+--require("null-ls").setup()
+require("bufferline").setup {}
 
 -- statusline setup
 --require('lualine').setup() {
-    --options = { theme = 'gruvbox' }
+--options = { theme = 'gruvbox' }
 --}
 
 --OrgMode Setup
@@ -324,22 +466,20 @@ require'lspconfig'.ruby_ls.setup{}
 require('orgmode').setup_ts_grammar()
 
 -- Tree-sitter configuration
-require'nvim-treesitter.configs'.setup {
+require 'nvim-treesitter.configs'.setup {
   -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
   highlight = {
     enable = true,
-    additional_vim_regex_highlighting = {'org'}, -- Required for spellcheck, some LaTex highlights and code block highlights that do not have ts grammar
+    additional_vim_regex_highlighting = { 'org' }, -- Required for spellcheck, some LaTex highlights and code block highlights that do not have ts grammar
+    indent = true,
   },
-  ensure_installed = {'org'}, -- Or run :TSUpdate org
 }
 
 require('orgmode').setup({
-  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
+  org_agenda_files = { '~/Dropbox/org/*', '~/my-orgs/**/*' },
   org_default_notes_file = '~/Dropbox/org/refile.org',
 })
 
 -- Quickly insert empty lines
 vim.api.nvim_set_keymap("n", "[<space>", ":<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[", { noremap = true, })
 vim.api.nvim_set_keymap("n", "]<space>", ":<c-u>put =repeat(nr2char(10), v:count1)<cr>", { noremap = true, })
-
-

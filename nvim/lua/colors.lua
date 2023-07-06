@@ -43,7 +43,10 @@ local xxx = base16.theme_from_array {
 --base16(uwu, true)
 --base16(xxx, true)
 
-vim.cmd[[colorscheme onedark]]
+--vim.cmd[[colorscheme gruvbox-material]]
+vim.cmd[[colorscheme tokyonight-storm]]
+--vim.cmd[[let g:gruvbox_material_background = 'soft']]
+vim.cmd[[set background=dark]]
 
  --higlights
 vim.cmd [[

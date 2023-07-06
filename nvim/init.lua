@@ -1,17 +1,19 @@
 local modules = {
-	'options',
-	'plugins',
-	'status',
-	'config',
+  'options',
+  'plugins',
+  'status',
+  'config',
   'colors',
-	'mappings'
+  'mappings'
 }
 
+
+require("mason-config")
 for i, a in ipairs(modules) do
-	local ok, err = pcall(require, a)
-	if not ok then 
-		error("Error calling " .. a .. err)
-	end
+  local ok, err = pcall(require, a)
+  if not ok then
+    error("Error calling " .. a .. err)
+  end
 end
 
 -- Auto commands

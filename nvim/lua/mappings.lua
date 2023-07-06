@@ -16,7 +16,7 @@ function minimal()
     active = false
   else 
     vim.cmd [[
-      set nonumber norelativenumber showmode showtabline=0 laststatus=0 signcolumn=no foldcolumn=1
+      set number norelativenumber showmode showtabline=0 laststatus=0 signcolumn=no foldcolumn=1
       au WinEnter,BufEnter, * set nonumber norelativenumber 
     ]]
     active = true
@@ -29,7 +29,7 @@ end
 vim.api.nvim_set_keymap("n", "<leader>f", ":Format<CR>", { noremap = true, silent = true, })
 vim.api.nvim_set_keymap("n", "<leader>F", ":FormatWrite<CR>", { noremap = true, silent = true, })
 -- Format after save
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
+-- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
 --nmap("<C-j>", ":<ESC>")
 
 vim.api.nvim_set_keymap('i', '<C-j>', '<Esc>', { noremap = true, })
@@ -66,17 +66,27 @@ vim.api.nvim_set_keymap("v", "<PageDown>", "<nop>", { noremap = true, })
 -- Make double-<ESC> clear search highlights
 vim.api.nvim_set_keymap("n", "<Esc><Esc>", "<Esc>:nohlsearch<CR><Esc>", { silent = true, noremap = true, })
 
+--# copilot
+
+-- Note: <TAB><TAB> keybindings, slows down the dropdown suggestion selection
+--vim.api.nvim_set_keymap("i", "<TAB><TAB>", "<Plug>(copilot-next)", { silent = true, })
+--vim.api.nvim_set_keymap("i", "<C-k>", "<Plug>(copilot-previous)", { silent = true, })
+--vim.api.nvim_set_keymap("i", "<C-\\>", "<Plug>(copilot-dismiss)", { silent = true, })
+
+
 -- Normal Map
 nmap("<TAB>", ":tabnext")
 nmap("<S-TAB>", ":tabprev")
-nmap("<C-H>", ":split")
-nmap("<C-S-v>", ":vs")
-nmap("<C-v>", ":vs +terminal | startinsert")
-nmap("<C-h>", ":split +terminal | startinsert")
+--nmap("<C-H>", ":split")
+--nmap("<C-S-v>", ":vs")
+--nmap("<C-v>", ":vs +terminal | startinsert")
+--nmap("<C-h>", ":split +terminal | startinsert")
 nmap("<C-t>", ":tabnew")
 
-nmap("<C-q>", ":q")
-nmap("<C-s>", ":w")
+vim.cmd("set guitablabel=%t\\ %m")
+
+--nmap("<C-q>", ":q")
+--nmap("<C-s>", ":w")
 
 --nmap("<C-z>", ":u")
 --nmap("<C-r>", ":redo")
@@ -114,6 +124,12 @@ vim.api.nvim_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { si
 vim.api.nvim_set_keymap("n", "g0", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", { silent = true, noremap = true, })
 vim.api.nvim_set_keymap("n", "gW", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", { silent = true, noremap = true, })
 vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { silent = true, noremap = true, })
+
+-- toggle terminal
+--
+nmap("<Leader>t", ":ToggleTerm size=50")
+
+
 
 --code_action
 vim.api.nvim_set_keymap("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<CR>", { silent = true, noremap = true, })
