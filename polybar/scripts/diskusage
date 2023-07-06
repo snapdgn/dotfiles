@@ -1,0 +1,8 @@
+#!/bin/sh
+
+location=/
+location2=/home
+[ -d "$location" ] || exit
+icon=" "
+echo "$icon $(df -h "$location" | awk ' /[0-9]/ {print $3,"/"$2}')"
+#echo "$icon $(df -h "$location2" | awk ' /[0-9]/ {print $4}')"
