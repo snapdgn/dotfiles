@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      <home-manager/nixos>
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -74,15 +75,44 @@
   # Enable touchpad support (enabled default in most desktopManager).
    services.xserver.libinput.enable = true;
 
+  # JACK support
+    services.jack = {
+    jackd.enable = true;
+    # support ALSA only programs via ALSA JACK PCM plugin
+    alsa.enable = false;
+    # support ALSA only programs via loopback device (supports programs like Steam)
+    loopback = {
+      enable = true;
+      # buffering parameters for dmix device to work with ALSA only semi-professional sound programs
+      #dmixConfig = ''
+      #  period_size 2048
+      #'';
+    };
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
    users.users.snapdgn= {
      isNormalUser = true;
-     extraGroups = [ "wheel" "networkmanager" "docker" ]; # Enable ‘sudo’ for the user.
+     extraGroups = [ "wheel" "networkmanager" "docker" "jackaudio" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        firefox
        tree
      ];
    };
+
+   # home-manager
+
+#   home-manager.users.snapdgn = { pkgs, ... }: {
+#    home.packages = [ pkgs.atool pkgs.httpie ];
+#    home.stateVersion = "23.05";
+#    programs.bash.enable = true;
+#   };
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = false;
+    users.snapdgn = import /home/snapdgn/.config/nixpkgs/home.nix;
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -95,9 +125,9 @@
      git
      alacritty
      st
-     (st.overrideAttrs (oldAttrs: rec {
-      configFile = writeText "config.def.h" (builtins.readFile /home/snapdgn/.config/st/config.h);
-     }))
+#     (st.overrideAttrs (oldAttrs: rec {
+#      configFile = writeText "config.def.h" (builtins.readFile /home/snapdgn/.config/st/config.h);
+#     }))
      polybar
      dunst
      eww
@@ -141,6 +171,12 @@
      # optional pkgs
      discord
      vscode
+     # muzik
+     spotifyd
+     mpd
+     # dev
+     rustup
+     rust-analyzer
    ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -171,6 +207,12 @@
 
   # enable docker
    virtualisation.docker.enable = true;
+
+  # nix settings
+  nix.settings = {
+    keep-outputs = true;
+    keep-derivations = true;
+    };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
