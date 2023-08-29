@@ -21,7 +21,7 @@
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   # Set your time zone.
-   time.timeZone = "Canada/Eastern";
+   time.timeZone = "Asia/Kolkata";
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -35,8 +35,14 @@
   #   useXkbConfig = true; # use xkbOptions in tty.
   # };
 
+  # Enable tailscaled
+  services.tailscale.enable = true;
+
   # Enable the X11 windowing system.
    services.xserver.enable = true;
+   services.xserver.screenSection = ''
+	Option "metamodes" "DP-4: 2560x1440_155 +0+0, DP-0: 2560x1440_165 +2560+0"
+'';
    services.xserver.windowManager.bspwm.enable = true;
 
   # fonts
@@ -76,19 +82,19 @@
    services.xserver.libinput.enable = true;
 
   # JACK support
-    services.jack = {
-    jackd.enable = true;
-    # support ALSA only programs via ALSA JACK PCM plugin
-    alsa.enable = false;
-    # support ALSA only programs via loopback device (supports programs like Steam)
-    loopback = {
-      enable = true;
-      # buffering parameters for dmix device to work with ALSA only semi-professional sound programs
-      #dmixConfig = ''
-      #  period_size 2048
-      #'';
-    };
-  };
+#    services.jack = {
+#    jackd.enable = true;
+#    # support ALSA only programs via ALSA JACK PCM plugin
+#    alsa.enable = false;
+#    # support ALSA only programs via loopback device (supports programs like Steam)
+#    loopback = {
+#      enable = true;
+#      # buffering parameters for dmix device to work with ALSA only semi-professional sound programs
+#      #dmixConfig = ''
+#      #  period_size 2048
+#      #'';
+#    };
+#  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
    users.users.snapdgn= {
@@ -166,6 +172,7 @@
      tmux
      chromium
      lxappearance
+     tailscale
      # nix specific pkgs
      home-manager
      # optional pkgs
@@ -173,19 +180,26 @@
      vscode
      # muzik
      spotifyd
+     pa_applet
      mpd
      # dev
      rustup
      rust-analyzer
+     go
+     # bluetooth
+     rofi-bluetooth
+     #network
+     networkmanagerapplet
    ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+   programs.gnupg.agent = {
+     enable = true;
+#     pinentryFalvor = "gtk2";
+     enableSSHSupport = true;
+   };
 
   # enable programs
   programs.zsh.enable = true;
@@ -193,6 +207,7 @@
   users.defaultUserShell = pkgs.zsh;
   # only change shell for one user
   # users.users.snapdgn.shell = pkgs.zsh;
+
 
   # List services that you want to enable:
    services.xserver.xkbOptions = "ctrl:swapcaps";
@@ -212,6 +227,7 @@
   nix.settings = {
     keep-outputs = true;
     keep-derivations = true;
+    experimental-features = [ "nix-command" "flakes" ];
     };
 
   # Open ports in the firewall.

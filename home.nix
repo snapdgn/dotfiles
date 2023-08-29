@@ -20,7 +20,46 @@
   programs.home-manager.enable = true;
 
     home.packages = with pkgs; [
+     wpsoffice
+     slack
+     zoom-us
+     clang
+     clang-tools
+     fish
+    # neomutt deps 
+     neomutt
+     pass
+     mutt-wizard
+
+    #haskell
+    cabal-install
+    ghc
+    
+    # python
+    python311Packages.python-lsp-server
+    python311Packages.ipython
+
+    # Language Servers
+#    rust-analyzer
+    nodePackages.typescript-language-server
+    nodePackages_latest.eslint
+    lua-language-server
+    haskell-language-server
+    gopls
+    clang-tools
+
+    # rust packages
+
+    wasm-pack
+    cargo-generate
+
+    # dev
+    vscode
+
+    #neomutt dep ends
+     #llvmPackages_rocm.clang-tools-extra
   ];
+
   
    programs = {
      direnv.enable = true;
@@ -72,4 +111,5 @@
   programs.zoxide = {
     enable = true;
   };
+
 }
