@@ -34,7 +34,11 @@
     #haskell
     cabal-install
     ghc
-    
+
+    #misc
+    zathura
+    spotifyd
+
     # python
     python311Packages.python-lsp-server
     python311Packages.ipython
@@ -47,14 +51,19 @@
     haskell-language-server
     gopls
     clang-tools
+    nodePackages_latest.pyright
+    nodePackages_latest.bash-language-server
 
     # rust packages
 
     wasm-pack
     cargo-generate
+    wasm-bindgen-cli
 
     # dev
     vscode
+    gef
+    tshark
 
     #neomutt dep ends
      #llvmPackages_rocm.clang-tools-extra

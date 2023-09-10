@@ -8,11 +8,13 @@ end)
 
 -- When you don't have mason.nvim installed
 -- You'll need to list the servers installed in your system
-lsp.setup_servers({ 'tsserver', 'eslint', 'lua_ls', 'rust_analyzer', 'clangd', 'pyright', 'r_language_server' })
+lsp.setup_servers({ 'tsserver', 'eslint', 'lua_ls', 'rust_analyzer', 'clangd', 'pyright', 'r_language_server', 'bashls' })
 
 -- (Optional) Configure lua language server for neovim
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 require 'lspconfig'.pyright.setup {}
+require 'lspconfig'.clangd.setup {}
+require 'lspconfig'.bashls.setup {}
 require 'lspconfig'.r_language_server.setup {}
 
 vim.diagnostic.config({
