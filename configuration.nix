@@ -134,10 +134,14 @@
 #     (st.overrideAttrs (oldAttrs: rec {
 #      configFile = writeText "config.def.h" (builtins.readFile /home/snapdgn/.config/st/config.h);
 #     }))
+     clang
+     clang-tools
+     gdb
      polybar
      dunst
      eww
      feh
+     pass
      flameshot
      picom
      rofi
@@ -147,6 +151,10 @@
      tldr
      unzip
      zsh
+     fish
+     pavucontrol
+     gparted
+     htop
      virt-manager
      xorg.xinit
      xorg.xorgserver
@@ -170,26 +178,26 @@
      brightnessctl
      pcmanfm
      tmux
-     chromium
+     gnumake
+     file
+     xclip
      lxappearance
      tailscale
      # nix specific pkgs
      home-manager
-     # optional pkgs
-     discord
-     vscode
      # muzik
      spotifyd
      pa_applet
      mpd
-     # dev
-     rustup
-     rust-analyzer
-     go
      # bluetooth
      rofi-bluetooth
      #network
      networkmanagerapplet
+     #headers
+     #linux-headers
+
+     #misc
+     tlp
    ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -208,6 +216,9 @@
   # only change shell for one user
   # users.users.snapdgn.shell = pkgs.zsh;
 
+  services.elasticsearch = {
+  enable = false;
+};
 
   # List services that you want to enable:
    services.xserver.xkbOptions = "ctrl:swapcaps";
@@ -219,15 +230,33 @@
   # bluetooth
    hardware.bluetooth.enable = true;
    services.blueman.enable = true;
+   
+   # make the bluetooth keys on headset work
+   systemd.user.services.mpris-proxy = {
+    description = "Mpris proxy";
+    after = [ "network.target" "sound.target" ];
+    wantedBy = [ "default.target" ];
+    serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+};
+
+  # postgresql
+   services.postgresql.enable = false;
 
   # enable docker
    virtualisation.docker.enable = true;
-
+  
   # nix settings
   nix.settings = {
     keep-outputs = true;
     keep-derivations = true;
     experimental-features = [ "nix-command" "flakes" ];
+    auto-optimise-store = true;
+    };
+  # automatically clean gc roots
+   nix.gc = {
+     automatic = true;
+     dates = "weekly";
+     options = "--delete-older-than 30d";
     };
 
   # Open ports in the firewall.
@@ -250,4 +279,3 @@
   system.stateVersion = "23.05"; # Did you read the comment?
 
 }
-

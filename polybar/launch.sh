@@ -3,6 +3,14 @@ DIR="$HOME/.config/polybar"
 killall -q polybar
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
+# launch the top bar
+#polybar top &
+
+#external_monitor = $(xrandr --query | grep 'HDMI-2')
+
+#if [[ $external_monitor = *connected* ]]; then
+  #polybar top_external 
+
 # Show on all monitors. Systray icons always go in the main one
 monitors=($(xrandr | awk '/ connected / {print $1;}'))
 main=0

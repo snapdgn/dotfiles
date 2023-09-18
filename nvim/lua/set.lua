@@ -1,8 +1,9 @@
 vim.opt.nu = true
 vim.opt.relativenumber = true
 vim.opt.wrap = true
-vim.opt.textwidth = 30
+vim.opt.textwidth = 80
 vim.opt.linebreak = true
+vim.opt.spell = true
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4

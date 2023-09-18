@@ -16,7 +16,7 @@ alias ls="exa --icons"
 #alias ls="colorls"
 alias gc="git clone"
 alias v="nvim"
-alias cls="clear"
+#alias cls="clear"
 alias cd="z"
 alias cat="bat"
 alias bp="bpython"
@@ -27,6 +27,7 @@ alias diff="diff-so-fancy"
 alias k="kubectl"
 alias ipy="ipython"
 alias vt="vagrant"
+alias cclip='xclip -selection clipboard'
 #alias man="tldr"
 alias grep="rg"
 alias db="distrobox"
@@ -49,11 +50,10 @@ export PATH=$PATH:/home/snapdgn/.ghcup/ghc/9.2.8/bin/
 #export BITIA_SERVER="http://localhost:3141"
 #export BITIA_SERVER="http://192.168.0.101:3141"
 #
-#spack
-#source Mitacs/spack/share/spack/setup-env.sh
 # use zoxide
 # eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
+eval "$(direnv hook zsh)"
 
 ## var colors
 #source $(dirname $(gem which colorls))/tab_complete.sh

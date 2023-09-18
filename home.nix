@@ -23,56 +23,62 @@
      wpsoffice
      slack
      zoom-us
-     clang
-     clang-tools
-     fish
     # neomutt deps 
      neomutt
-     pass
      mutt-wizard
 
     #haskell
-    cabal-install
-    ghc
+    stack
+    haskell.compiler.native-bignum.ghc946
+    ghcid
+    haskellPackages.shake
+    haskellPackages.zlib
 
-    #misc
-    zathura
-    spotifyd
 
     # python
     python311Packages.python-lsp-server
     python311Packages.ipython
 
     # Language Servers
-#    rust-analyzer
     nodePackages.typescript-language-server
     nodePackages_latest.eslint
     lua-language-server
     haskell-language-server
     gopls
-    clang-tools
     nodePackages_latest.pyright
     nodePackages_latest.bash-language-server
 
-    # rust packages
-
+    # rust things
+    rustup
     wasm-pack
     cargo-generate
     wasm-bindgen-cli
 
     # dev
     vscode
+    chromium
     gef
+    go
     tshark
+    yarn
+    nodejs_latest
 
-    #neomutt dep ends
-     #llvmPackages_rocm.clang-tools-extra
+    #misc
+    zathura
+    spotifyd
+    sxiv
+    tailscale
+    brave
+    bcc
+    obsidian
+    cloc
+    ddgr
+    nix-index
   ];
 
   
    programs = {
      direnv.enable = true;
-#     nix-direnv.enable = true;
   };
 
 # -- Zsh config starts
