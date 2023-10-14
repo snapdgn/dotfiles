@@ -65,5 +65,6 @@ return require('packer').startup(function(use)
         requires = { 'nvim-tree/nvim-web-devicons', opt = true }
     }
     use('navarasu/onedark.nvim')
+    use("rebelot/kanagawa.nvim")
     use('nvim-tree/nvim-web-devicons')
 end)

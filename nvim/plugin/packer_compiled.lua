@@ -99,6 +99,11 @@ _G.packer_plugins = {
     path = "/home/snapdgn/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim",
     url = "https://github.com/lukas-reineke/indent-blankline.nvim"
   },
+  ["kanagawa.nvim"] = {
+    loaded = true,
+    path = "/home/snapdgn/.local/share/nvim/site/pack/packer/start/kanagawa.nvim",
+    url = "https://github.com/rebelot/kanagawa.nvim"
+  },
   ["lsp-zero.nvim"] = {
     loaded = true,
     path = "/home/snapdgn/.local/share/nvim/site/pack/packer/start/lsp-zero.nvim",
@@ -179,6 +184,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/snapdgn/.local/share/nvim/site/pack/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
+  },
+  ["template.nvim"] = {
+    loaded = true,
+    path = "/home/snapdgn/.local/share/nvim/site/pack/packer/start/template.nvim",
+    url = "https://github.com/glepnir/template.nvim"
   },
   ["trouble.nvim"] = {
     loaded = true,
