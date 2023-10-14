@@ -1,7 +1,0 @@
-configuration {
-
-	modi: "window,drun,ssh,combi";
-	theme: "Monokai";
-	combi-modi: "window,drun,ssh";
-
-}

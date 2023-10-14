@@ -1,0 +1,34 @@
+lan_interface="enp0s31f6"  # Change this to your LAN interface name if needed
+wifi_interface="wlp3s0" # Change this to your Wi-Fi interface name if needed
+
+# Function to check if an interface is up
+is_interface_up() {
+    local interface="$1"
+    if ip link show "$interface" &> /dev/null; then
+        if ip link show "$interface" | grep -q "state UP"; then
+            return 0 # Interface is up
+        fi
+    fi
+    return 1 # Interface is not up
+}
+
+# Function to print a cool glyph
+print_glyph() {
+    local glyph="$1"
+    echo -e "\e[93m$glyph\e[0m"  # Yellow text
+}
+
+# Check if LAN interface is up
+if is_interface_up "$lan_interface"; then
+    ip_addr=$(ip addr show dev "$lan_interface" | awk '/inet / {print $2}' | cut -d '/' -f 1)
+    glyph="\Uf0c6"
+elif is_interface_up "$wifi_interface"; then
+    ip_addr=$(ip addr show dev "$wifi_interface" | awk '/inet / {print $2}' | cut -d '/' -f 1)
+    glyph="\Uf1eb" 
+fi
+
+if [[ -n $ip_addr ]]; then
+    echo -e "$glyph $ip_addr"
+else
+    print_glyph "\U274C"  # Glyph for cross mark (❌)
+fi
