@@ -5,6 +5,7 @@
 (scroll-bar-mode 0)
 
 (require 'package)
+(require 'use-package)
 (package-initialize)
 (add-to-list 'package-archives '("gnu-devel" . "https://elpa.gnu.org/devel/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -14,107 +15,129 @@
 (setq ido-enable-flex-matching t)
 ;; ido mode configs end
 (show-paren-mode 1)
-(set-frame-font "Noto Sans Mono SemiCondensed-12")
+;(set-frame-font "Noto Sans Mono SemiCondensed-12")
+(set-frame-font "Iosevka Nerd Font Mono-13")
 ;(set-frame-font "Fira Code-12")
 ;;(package-refresh-contents)
 
-;; elpaca package manager setup
-(defvar elpaca-installer-version 0.5)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil
-                              :files (:defaults (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                 ((zerop (call-process "git" nil buffer t "clone"
-                                       (plist-get order :repo) repo)))
-                 ((zerop (call-process "git" nil buffer t "checkout"
-                                       (or (plist-get order :ref) "--"))))
-                 (emacs (concat invocation-directory invocation-name))
-                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                 ((require 'elpaca))
-                 ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
+;; --------------------------------------------staight.el installation start
+(setq straight-repository-branch "develop")
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+;; -----------------------------------------------staraight.el installtion end
 
+;; Disable package.el in favor of straight.el
 (setq package-enable-at-startup nil)
-;; elpaca setup done
-
-;; elpaca package install
 
 ;; Install use-package support
-(elpaca elpaca-use-package
-  ;; Enable :elpaca use-package keyword.
-  (elpaca-use-package-mode)
-  ;; Assume :elpaca t unless otherwise specified.
-  (setq elpaca-use-package-by-default t))
+(straight-use-package 'use-package)
+;; Configure use-package to use straight.el by default
+(use-package straight
+  :custom
+  (straight-use-package-by-default t))
 
-;; Block until current queue processed.
-(elpaca-wait)
-
-;;When installing a package which modifies a form used at the top-level
-;;(e.g. a package which adds a use-package key word),
-;;use `elpaca-wait' to block until that package has been installed/configured.
-;;For example:
-;;(use-package general :demand t)
-;;(elpaca-wait)
-
-;; Expands to: (elpaca evil (use-package evil :demand t))
 (use-package evil :demand t)
 (evil-mode 1)
 
-;; custom-keybindings
-(define-key evil-insert-state-map (kbd "C-j") 'evil-normal-state)
-
-;(use-package evil
-;  :demand t
-;  :init
-;  (setq evil-want-C-j-bindings nil) ; Unbind C-j in insert state
-;  :config
-;  ;(define-key evil-insert-state-map "C-j" nil) ; Unmap C-j
-;  (define-key evil-insert-state-map "M-j" 'evil-normal-state) ; Map C-j to evil-normal-state
-;  (evil-mode 1))
-
 ;; Installed Packages
-(elpaca lsp-mode)
-(elpaca rust-mode)
-(elpaca gruvbox-theme :ensure t)
-(elpaca lsp-ui)
-(elpaca projectile)
-(elpaca lsp-ivy)
-(elpaca lsp-haskell)
-(elpaca lsp-treemacs)
+(use-package rust-mode)
+(use-package lsp-ui)
+(use-package projectile)
+(use-package lsp-ivy)
+(use-package lsp-haskell)
+(use-package lsp-treemacs)
+(use-package undo-tree)
+(use-package multi-term)
+(use-package direnv
+ :config
+ (direnv-mode))
+(use-package clang-format
+  :config
+  (setq clang-format-style "file"))
+(use-package magit)
+(add-hook 'before-save-hook 'clang-format-buffer)
 
-(use-package flycheck
-  :defer t
-  :hook (after-init . global-flycheck-mode))
+(use-package yasnippet
+  :ensure t
+  :config
+  (add-to-list 'yas-snippet-dirs "~/cp/")
+  (yas-global-mode 1))
+;; ------------------------------------lsp-mode package
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l"))
+;  :commands lsp)
 
-;;(add-hook 'after-init-hook #'global-flycheck-mode)
-(elpaca company)
+;; optionally
+(use-package lsp-ui :commands lsp-ui-mode)
+;; if you are ivy user
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; optional if you want which-key integration
+(use-package which-key
+    :config
+    (which-key-mode))
+
+;; lsp-mode end---------------------------------------
+
+;; ----------------------------------------------------- flycheck + posframe setup
+(use-package flycheck)
+(use-package flycheck-posframe)
+(global-flycheck-mode)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(with-eval-after-load 'flycheck
+  (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
+
+;; Set the background color and other options (optional)
+(with-eval-after-load 'flycheck-posframe
+  (setq flycheck-posframe-warning-prefix "⚠ "))
+(setq flycheck-idle-change-delay 2) ; Increase the delay between checks to 2 seconds
+(setq flycheck-posframe-inhibit-functions
+      (delq 'flycheck-posframe-inhibit-proced flycheck-posframe-inhibit-functions))
+;;(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+;; Customize the appearance of the floating window
+(setq flycheck-posframe-position 'center)
+(setq multi-term-program "/nix/store/rra18alcyj16wz2sm2rw5rnji7dgn7pp-system-path/bin/zsh")
+;;(setq multi-term-program "/nix/store/rra18alcyj16wz2sm2rw5rnji7dgn7pp-system-path/bin/bash")
+;; ----------------------------------------------------- posframe setup
+(use-package flycheck-rust)
+
+(use-package company)
 (add-hook 'after-init-hook 'global-company-mode)
 
-(elpaca ivy)
-(elpaca all-the-icons)
+(use-package ivy)
+(use-package all-the-icons)
+;; ---------------------------------------Package Setups
+(global-undo-tree-mode)
+(setq undo-tree-auto-save-history t)
+(setq undo-tree-history-directory "~/.emacs.d/undo-history/")
 
+;; ---------------------------------------Package setup ends
+
+
+
+;; custom-keybindings
+(define-key evil-insert-state-map (kbd "C-j") 'evil-normal-state)
+;(global-set-key (kbd "M-, ,") 'save-buffer)
+(global-set-key (kbd "C-,") 'save-buffer)
+(define-key evil-normal-state-map (kbd "g;") 'goto-last-change)
 
 (setq lsp-rust-server 'rust-analyzer)
 ;; LSP SETUP --------------------
@@ -126,8 +149,15 @@
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1)  ;; clangd is fast
 
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+;(with-eval-after-load 'lsp-mode
+;  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+
+;; -----treesitter setup
+(require 'treesit)
+(add-to-list
+ 'treesit-language-source-alist
+ '(python "https://github.com/tree-sitter/tree-sitter-python.git"))
+
 ;; -----------------------------packages end-------------------------------
 ;; -----------------------------themes configuration-----------------------
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
@@ -155,6 +185,50 @@
 
 
 ;; misc
+
+(defun my-open-multi-term-below ()
+  "Open a multi-term shell in a split window at the bottom."
+  (interactive)
+  (split-window-below)
+  (other-window 1) ; Move the cursor to the new window
+  (multi-term))
+
+(global-display-line-numbers-mode t)
+;; -------------------global keymaps
+
+(global-set-key (kbd "C-x t") 'my-open-multi-term-below)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+;(bind-key "k" (lambda () (interactive) (kill-buffer (current-buffer))) ctl-x-map)
+(defun kill-buffer-and-window ()
+  "Kill the current buffer and its associated window."
+  (interactive)
+  (kill-buffer (current-buffer))
+  (delete-window))
+(global-set-key (kbd "C-x k") 'kill-buffer-and-window)
+
+;; custom functions ------------------------------------------
+
+(defun kill-buffer-and-window ()
+  "Kill the current buffer and its associated window with a single key confirmation."
+  (interactive)
+  (if (y-or-n-p "Kill this buffer and its window? ")
+      (progn
+        (kill-buffer (current-buffer))
+        (delete-window))))
+
+(global-set-key (kbd "C-x k") 'kill-buffer-and-window)
+
+(defun toggle-comment-or-uncomment-region ()
+  "Toggle comment or uncomment the selected region."
+  (interactive)
+  (if (use-region-p)
+      (comment-or-uncomment-region (region-beginning) (region-end))
+    (comment-or-uncomment-region (line-beginning-position) (line-end-position))))
+
+(global-set-key (kbd "M-;") 'toggle-comment-or-uncomment-region)
+
+;; custom functions end-------------------------------------------
+
 (ivy-mode)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
@@ -166,6 +240,3 @@
 ;; custom-keybindings end
 
 (setq backup-directory-alist '((".", "~/.emacs_saves"))
-
-;; global keys
-(global-set-key [(control x) (k)] 'kill-this-buffer)
