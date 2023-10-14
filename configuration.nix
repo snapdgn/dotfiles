@@ -7,6 +7,7 @@
 {
   imports =
     [ # Include the results of the hardware scan.
+      <nixos-hardware/lenovo/thinkpad/t480>
       ./hardware-configuration.nix
       <home-manager/nixos>
     ];

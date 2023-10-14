@@ -28,25 +28,30 @@
      mutt-wizard
 
     #haskell
+    cabal-install
     stack
-    haskell.compiler.native-bignum.ghc946
+    ghc
     ghcid
     haskellPackages.shake
-    haskellPackages.zlib
 
 
     # python
     python311Packages.python-lsp-server
     python311Packages.ipython
+    python311Packages.pylint
+    python311Packages.mypy
 
     # Language Servers
     nodePackages.typescript-language-server
     nodePackages_latest.eslint
+    #rust-analyzer
     lua-language-server
     haskell-language-server
     gopls
     nodePackages_latest.pyright
     nodePackages_latest.bash-language-server
+
+    # syntax checkers
 
     # rust things
     rustup
@@ -64,16 +69,23 @@
     nodejs_latest
 
     #misc
+    emacs29
     zathura
     spotifyd
     sxiv
+    mpv
+    #wireshark-qt
+    nerdfonts
+    eiskaltdcpp
     tailscale
     brave
+    delta
     bcc
     obsidian
     cloc
     ddgr
     nix-index
+    nodePackages.serve
   ];
 
   
