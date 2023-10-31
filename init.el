@@ -24,11 +24,26 @@
 ;(set-frame-font "Fira Code-12")
 ;;(package-refresh-contents)
 
+(eval-after-load 'org
+  '(progn
+     (define-key org-mode-map (kbd "C-,") nil)))
+
 ;; org-mode
+;;(require 'org)
+;; unbind `C-,' key, which is used to save files (evil mode keybinding)
+
+;; enable TAB key in org mode
+(setq evil-want-C-i-jump nil)
+(global-set-key (kbd "C-c l") #'org-store-link)
+(global-set-key (kbd "C-c a") #'org-agenda)
+(global-set-key (kbd "C-c c") #'org-capture)
+;; set margin
+(setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
+
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (transient-mark-mode 1)
 
 
-;;(require 'org)
 
 ;; --------------------------------------------staight.el installation start
 (setq straight-repository-branch "develop")
@@ -77,6 +92,7 @@
 (use-package rust-mode
   :ensure t
   :defer t)
+(add-hook 'rust-mode-hook 'rust-ts-mode)
 
 (use-package lsp-ui
   :ensure t
