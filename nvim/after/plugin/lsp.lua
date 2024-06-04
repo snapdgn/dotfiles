@@ -8,13 +8,19 @@ end)
 
 -- When you don't have mason.nvim installed
 -- You'll need to list the servers installed in your system
-lsp.setup_servers({ 'haskell-language-server', 'tsserver', 'eslint', 'lua_ls', 'rust_analyzer', 'clangd', 'pyright',
-    'r_language_server', 'bashls' })
+lsp.setup_servers({ 'haskell-language-server', 'gopls', 'tsserver', 'eslint', 'lua_ls', 'rust_analyzer',
+    'pyright', 'clangd', 'zls', 'r_language_server', 'bashls' })
 
 -- (Optional) Configure lua language server for neovim
-require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+require 'lspconfig'.lua_ls.setup(lsp.nvim_lua_ls())
 require 'lspconfig'.pyright.setup {}
-require 'lspconfig'.clangd.setup {}
+require 'lspconfig'.clangd.setup {
+    cmd = { "clangd", "--compile-commands-dir=~/GSOC/p4lang/p4c/build" }
+}
+require 'lspconfig'.gopls.setup {}
+require 'lspconfig'.zls.setup {}
+require'lspconfig'.ocamllsp.setup{}
+require 'lspconfig'.tsserver.setup {}
 --require 'lspconfig'.bashls.setup {}
 require 'lspconfig'.r_language_server.setup {}
 require('lspconfig')['hls'].setup {
@@ -30,12 +36,11 @@ cmp.setup({
         { name = 'nvim_lsp' },
     },
     mapping = {
-        ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+        ['<Enter>'] = cmp.mapping.confirm({ select = true }),
         ['<C-e>'] = cmp.mapping.abort(),
         ['<C-u>'] = cmp.mapping.scroll_docs(-4),
         ['<C-d>'] = cmp.mapping.scroll_docs(4),
         ['<Up>'] = cmp.mapping.select_prev_item(cmp_select_opts),
-        ['<Down>'] = cmp.mapping.select_next_item(cmp_select_opts),
         ['<C-p>'] = cmp.mapping(function()
             if cmp.visible() then
                 cmp.select_prev_item(cmp_select_opts)
@@ -87,3 +92,9 @@ vim.diagnostic.config({
 -- Show line diagnostics automatically in hover window
 vim.o.updatetime = 250
 vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+
+vim.api.nvim_set_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>a',
+    '<cmd>lua vim.lsp.buf.code_action({ diagnostics = vim.lsp.diagnostic.get_line_diagnostics() })<CR>',
+    { silent = true })

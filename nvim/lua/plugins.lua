@@ -64,7 +64,24 @@ return require('packer').startup(function(use)
         'nvim-lualine/lualine.nvim',
         requires = { 'nvim-tree/nvim-web-devicons', opt = true }
     }
+    use {
+        'nvim-tree/nvim-tree.lua',
+        requires = {
+            'nvim-tree/nvim-web-devicons', -- optional
+        },
+    }
+    -- flutter plugins
+    use {
+        'akinsho/flutter-tools.nvim',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'stevearc/dressing.nvim', -- optional for vim.ui.select
+        },
+    }
+    use('ludovicchabant/vim-gutentags')
     use('navarasu/onedark.nvim')
+    use("ellisonleao/gruvbox.nvim")
+    use { "catppuccin/nvim", as = "catppuccin" }
     use("rebelot/kanagawa.nvim")
     use('nvim-tree/nvim-web-devicons')
 end)
