@@ -5,7 +5,7 @@ return {
         build = ":TSUpdate",
         opts = {
             -- A list of parser names, or "all"
-            ensure_installed = { "lua", "go", "rust" },
+            ensure_installed = { "lua" },
 
             -- Install parsers synchronously (only applied to `ensure_installed`)
             sync_install = false,
@@ -32,9 +32,20 @@ return {
 
             local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 
+            -- TODO: figure out how to make this work
+            parser_config.brainfuck = {
+                install_info = {
+                    url = "https://github.com/hrmorley34/tree-sitter-brainfuck.git",
+                    files = { "src/parser.c" },            -- note that some parsers also require src/scanner.c or src/scanner.cc
+                    -- optional entries:
+                    branch = "main",                       -- default branch in case of git repo if different from master
+                    generate_requires_npm = true,          -- if stand-alone parser without npm dependencies
+                    requires_generate_from_grammar = true, -- if folder contains pre-generated src/parser.c
+                },
+            }
+
             vim.filetype.add({
                 pattern = { ["*%.bf"] = "brainfuck" },
-                --pattern = { ["*%.go"] = "go" },
             })
 
             parser_config.hyprlang = {

@@ -16,11 +16,11 @@ autocmd('TextYankPost', {
     end,
 })
 
---autocmd({"BufWritePre"}, {
-    --group = trim_ws_group,
-    --pattern = "*",
-    --command = [[%s/\s\+$//e]],
---})
+autocmd({"BufWritePre"}, {
+    group = trim_ws_group,
+    pattern = "*",
+    command = [[%s/\s\+$//e]],
+})
 
 autocmd({"BufRead", "BufNewFile"}, {
     group = file_type_group,

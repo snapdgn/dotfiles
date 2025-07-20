@@ -2,7 +2,6 @@ vim.opt.guicursor = ""
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
-vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 vim.opt.errorbells = false
 
@@ -39,7 +38,7 @@ vim.opt.updatetime = 50
 -- Don't pass messages to |ins-completion-menu|.
 vim.opt.shortmess:append("c")
 
---vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "80"
 
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
