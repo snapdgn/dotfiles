@@ -38,15 +38,67 @@ vim.diagnostic.config({
     },
 })
 
+-- Kind icons and highlight groups for completion popup
+local kind_icons = {
+    Text = '󰉿', Method = '󰆧', Function = '󰊕', Constructor = '',
+    Field = '󰜢', Variable = '󰀫', Class = '󰠱', Interface = '',
+    Module = '', Property = '󰜢', Unit = '󰑭', Value = '󰎠',
+    Enum = '', Keyword = '󰌋', Snippet = '', Color = '󰏘',
+    File = '󰈙', Reference = '󰈇', Folder = '󰉋', EnumMember = '',
+    Constant = '󰏿', Struct = '󰙅', Event = '', Operator = '󰆕',
+    TypeParameter = '',
+}
+
+local kind_hl = {
+    Text = 'String', Method = 'Function', Function = 'Function', Constructor = 'Special',
+    Field = '@property', Variable = '@variable', Class = 'Type', Interface = 'Type',
+    Module = '@module', Property = '@property', Unit = 'Number', Value = 'Number',
+    Enum = 'Type', Keyword = 'Keyword', Snippet = 'Special', Color = 'Special',
+    File = 'Directory', Reference = 'Identifier', Folder = 'Directory',
+    EnumMember = 'Constant', Constant = 'Constant', Struct = 'Structure',
+    Event = 'Special', Operator = 'Operator', TypeParameter = 'Type',
+}
+
 -- LSP keybindings on attach
 vim.api.nvim_create_autocmd('LspAttach', {
     desc = 'LSP actions',
     callback = function(event)
         local bufnr = event.buf
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if not client then return end
+
+        -- Extend triggerCharacters to include all word chars so completion
+        -- fires on every keystroke, not just on '.' or ':' (like nvim-cmp did)
+        local caps = client.server_capabilities.completionProvider
+        if caps then
+            local chars = caps.triggerCharacters or {}
+            for c = string.byte('a'), string.byte('z') do chars[#chars + 1] = string.char(c) end
+            for c = string.byte('A'), string.byte('Z') do chars[#chars + 1] = string.char(c) end
+            for c = string.byte('0'), string.byte('9') do chars[#chars + 1] = string.char(c) end
+            chars[#chars + 1] = '_'
+            caps.triggerCharacters = chars
+        end
+
+        vim.lsp.completion.enable(true, event.data.client_id, bufnr, {
+            autotrigger = true,
+            convert = function(item)
+                local kind_name = vim.lsp.protocol.CompletionItemKind[item.kind] or 'Unknown'
+                local icon = kind_icons[kind_name] or ''
+                return {
+                    kind = icon .. ' ' .. kind_name,
+                    kind_hlgroup = kind_hl[kind_name] or 'PmenuKind',
+                }
+            end,
+        })
+
         local bmap = function(mode, lhs, rhs, desc)
             vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
         end
 
+        bmap("n", "gd", vim.lsp.buf.definition, "LSP Go to Definition")
+        bmap("n", "gi", vim.lsp.buf.implementation, "LSP Go to Implementation")
+        bmap("n", "gI", vim.lsp.buf.type_definition, "LSP Go to Type Definition")
+        bmap("n", "gr", vim.lsp.buf.references, "LSP Go to References")
         bmap("n", "K", vim.lsp.buf.hover, "LSP Hover")
         bmap("n", "<leader>vws", vim.lsp.buf.workspace_symbol, "LSP Workspace Symbol")
         bmap("n", "<leader>vd", vim.diagnostic.open_float, "LSP Diagnostic")

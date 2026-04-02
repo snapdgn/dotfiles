@@ -1,18 +1,9 @@
--- nvim 0.12: highlight/indent are built-in, nvim-treesitter just manages parser installs
--- Ensure key parsers are installed on first run
-vim.api.nvim_create_autocmd("VimEnter", {
-    once = true,
-    callback = function()
-        local installed = require("nvim-treesitter.config").get_installed("parsers")
-        local wanted = { "lua", "go", "rust" }
-        local missing = {}
-        for _, lang in ipairs(wanted) do
-            if not vim.tbl_contains(installed, lang) then
-                table.insert(missing, lang)
-            end
-        end
-        if #missing > 0 then
-            vim.cmd("TSInstall " .. table.concat(missing, " "))
+-- Auto-enable treesitter highlighting for any filetype with an installed parser
+vim.api.nvim_create_autocmd('FileType', {
+    callback = function(ev)
+        local lang = vim.treesitter.language.get_lang(ev.match)
+        if lang and pcall(vim.treesitter.language.inspect, lang) then
+            vim.treesitter.start(ev.buf, lang)
         end
     end,
 })
