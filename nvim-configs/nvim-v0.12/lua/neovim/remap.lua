@@ -47,6 +47,12 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true, desc =
 -- "what does the code from the line 10 mean?"
 vim.keymap.set("n", "<leader>mnu", ":set rnu!<CR>", { desc = "Toggle relative numbers" })
 
+
+-- search within visual selection
+vim.keymap.set('x', '/', '<C-\\><C-n>`</\\%V', { desc = 'Search forward within visual selection' })
+vim.keymap.set('x', '?', '<C-\\><C-n>`>?\\%V', { desc = 'Search backward within visual selection' })
+
+
 -- don't be a pussy, just use hjkl
 vim.keymap.set("i", "<Up>", "<C-o>:echom \"--> k <-- \"<CR>")
 vim.keymap.set("i", "<Down>", "<C-o>:echom \"--> j <-- \"<CR>")

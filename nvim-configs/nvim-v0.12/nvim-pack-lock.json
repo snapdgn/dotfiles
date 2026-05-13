@@ -154,6 +154,10 @@
       "rev": "972158d6f9a630fad1954f42b921983ab4de8ab3",
       "src": "https://github.com/ray-x/starry.nvim"
     },
+    "stringbreaker.nvim": {
+      "rev": "f73fbffd836743c391487e94d6e0cf5f15f735d8",
+      "src": "https://github.com/duqcyxwd/stringbreaker.nvim"
+    },
     "tiny-inline-diagnostic.nvim": {
       "rev": "ba133b3e932416e4b9507095731a6d7276878fe8",
       "src": "https://github.com/rachartier/tiny-inline-diagnostic.nvim"

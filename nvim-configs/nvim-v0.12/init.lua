@@ -27,7 +27,7 @@ vim.pack.add({
     'https://github.com/ray-x/starry.nvim',
     'https://github.com/folke/tokyonight.nvim',
     'https://github.com/EdenEast/nightfox.nvim',
-    { src = 'https://github.com/catppuccin/nvim', name = 'catppuccin' },
+    { src = 'https://github.com/catppuccin/nvim',  name = 'catppuccin' },
     { src = 'https://github.com/rose-pine/neovim', name = 'rose-pine' },
     'https://github.com/rebelot/kanagawa.nvim',
     'https://github.com/sainnhe/everforest',
@@ -55,7 +55,7 @@ vim.pack.add({
     'https://github.com/sindrets/diffview.nvim',
 
     -- Navigation
-    { src = 'https://github.com/ThePrimeagen/harpoon', version = 'harpoon2' },
+    { src = 'https://github.com/ThePrimeagen/harpoon',          version = 'harpoon2' },
     'https://github.com/nvim-tree/nvim-tree.lua',
     'https://github.com/folke/trouble.nvim',
 
@@ -64,6 +64,7 @@ vim.pack.add({
     'https://github.com/kylechui/nvim-surround',
     'https://github.com/preservim/nerdcommenter',
     { src = 'https://github.com/jake-stewart/multicursor.nvim', version = '1.0' },
+    'https://github.com/duqcyxwd/stringbreaker.nvim',
 
     -- UI / Tools
     'https://github.com/folke/which-key.nvim',
@@ -77,7 +78,7 @@ vim.pack.add({
 
 -- Colorscheme (immediately after plugins loaded)
 vim.o.background = "dark"
-vim.cmd.colorscheme("gruvbox")
+vim.cmd.colorscheme("everforest")
 
 -- Onehalf needs its vim/ subdirectory on rtp
 local onehalf_path = vim.fn.stdpath('data') .. '/site/pack/core/opt/onehalf/vim'
