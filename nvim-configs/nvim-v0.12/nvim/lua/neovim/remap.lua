@@ -9,6 +9,9 @@ vim.keymap.set('n', '<leader>,', ':w<CR>', { noremap = true, silent = true })
 -- don't ask
 vim.keymap.set("n", "Y", "yg$")
 
+-- rename symbols
+vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename)
+
 -- better moves
 vim.keymap.set("n", "J", "mzJ`z")
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
