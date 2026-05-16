@@ -73,12 +73,19 @@ vim.pack.add({
     'https://github.com/pwntester/octo.nvim',
 
     -- Typst
-    'https://github.com/kaarmu/typst.vim',
+    --'https://github.com/kaarmu/typst.vim',
 })
 
--- Colorscheme (immediately after plugins loaded)
-vim.o.background = "dark"
-vim.cmd.colorscheme("everforest")
+-- Colorscheme (immediately after plugins loaded) — IST day/night auto-switch
+local IST_OFFSET = 5.5 * 60 * 60
+local ist_hour = tonumber(os.date("!%H", os.time() + IST_OFFSET))
+if ist_hour >= 7 and ist_hour < 19 then
+    vim.o.background = "light"
+    vim.cmd.colorscheme("dayfox")
+else
+    vim.o.background = "dark"
+    vim.cmd.colorscheme("nordfox")
+end
 
 -- Onehalf needs its vim/ subdirectory on rtp
 local onehalf_path = vim.fn.stdpath('data') .. '/site/pack/core/opt/onehalf/vim'
