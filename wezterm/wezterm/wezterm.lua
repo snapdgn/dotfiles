@@ -19,6 +19,7 @@ config.macos_window_background_blur = 20
 -- Font settings
 config.font_size = 16
 config.font = wezterm.font_with_fallback({
+    "PlemolJP",
     "Iosevka SS15",
     "BlexMono Nerd Font Mono",
     "Zed Plex Mono",
