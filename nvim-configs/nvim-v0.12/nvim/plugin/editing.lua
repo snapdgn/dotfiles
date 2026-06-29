@@ -1,5 +1,5 @@
 require("nvim-autopairs").setup({ map_cr = false })
-require("nvim-surround").setup()
+--require("nvim-surround").setup()
 -- nerdcommenter works out of the box via its plugin/ files
 
 -- Integrated <CR>: confirm completion when popup is visible, otherwise autopairs CR

@@ -52,3 +52,10 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevel = 99
+
+-- copy filepath
+vim.keymap.set("n", "<leader>fp", function()
+    local path = vim.fn.expand("%:p")
+    vim.fn.setreg("+", path)
+    print("Copied: " .. path)
+end, { desc = "Copy file path" })

@@ -32,6 +32,9 @@ vim.pack.add({
     'https://github.com/rebelot/kanagawa.nvim',
     'https://github.com/sainnhe/everforest',
     'https://github.com/sonph/onehalf',
+    'https://github.com/craftzdog/solarized-osaka.nvim',
+    'https://github.com/navarasu/onedark.nvim',
+    'https://github.com/sainnhe/gruvbox-material',
 
     -- Core UI
     'https://github.com/folke/snacks.nvim',
@@ -53,15 +56,17 @@ vim.pack.add({
     'https://github.com/lewis6991/gitsigns.nvim',
     'https://github.com/tpope/vim-fugitive',
     'https://github.com/sindrets/diffview.nvim',
+    'https://github.com/ThePrimeagen/git-worktree.nvim',
 
     -- Navigation
-    { src = 'https://github.com/ThePrimeagen/harpoon',          version = 'harpoon2' },
+    { src = 'https://github.com/ThePrimeagen/harpoon',    version = 'harpoon2' },
     'https://github.com/nvim-tree/nvim-tree.lua',
     'https://github.com/folke/trouble.nvim',
 
     -- Editing
     'https://github.com/windwp/nvim-autopairs',
-    'https://github.com/kylechui/nvim-surround',
+    --'https://github.com/kylechui/nvim-surround',
+    { src = 'https://github.com/nvim-mini/mini.surround', version = 'stable' },
     'https://github.com/preservim/nerdcommenter',
     { src = 'https://github.com/jake-stewart/multicursor.nvim', version = '1.0' },
     'https://github.com/duqcyxwd/stringbreaker.nvim',
@@ -72,6 +77,9 @@ vim.pack.add({
     'https://github.com/folke/todo-comments.nvim',
     'https://github.com/pwntester/octo.nvim',
 
+    -- Lint
+    'https://github.com/mfussenegger/nvim-lint',
+
     -- Typst
     --'https://github.com/kaarmu/typst.vim',
 })
@@ -80,11 +88,12 @@ vim.pack.add({
 local IST_OFFSET = 5.5 * 60 * 60
 local ist_hour = tonumber(os.date("!%H", os.time() + IST_OFFSET))
 if ist_hour >= 7 and ist_hour < 19 then
-    vim.o.background = "light"
-    vim.cmd.colorscheme("dayfox")
+    vim.o.background = "dark"
+    --vim.cmd.colorscheme("catppuccin-frappe")
+    vim.cmd.colorscheme("everforest")
 else
     vim.o.background = "dark"
-    vim.cmd.colorscheme("nordfox")
+    vim.cmd.colorscheme("everforest")
 end
 
 -- Onehalf needs its vim/ subdirectory on rtp
