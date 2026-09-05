@@ -4,6 +4,7 @@ require("neovim.set")
 require("neovim.remap")
 require("neovim.globals")
 require("neovim.autocmd")
+require("neovim.configs")
 
 -- Post-install/update hooks (must be before any vim.pack.add call)
 vim.api.nvim_create_autocmd('PackChanged', {
@@ -35,6 +36,9 @@ vim.pack.add({
     'https://github.com/craftzdog/solarized-osaka.nvim',
     'https://github.com/navarasu/onedark.nvim',
     'https://github.com/sainnhe/gruvbox-material',
+    'https://github.com/savq/melange-nvim',
+    'https://github.com/rmehri01/onenord.nvim',
+    'https://github.com/shaunsingh/nord.nvim',
 
     -- Core UI
     'https://github.com/folke/snacks.nvim',
@@ -68,7 +72,7 @@ vim.pack.add({
     --'https://github.com/kylechui/nvim-surround',
     { src = 'https://github.com/nvim-mini/mini.surround', version = 'stable' },
     'https://github.com/preservim/nerdcommenter',
-    { src = 'https://github.com/jake-stewart/multicursor.nvim', version = '1.0' },
+    --{ src = 'https://github.com/jake-stewart/multicursor.nvim', version = '1.0' },
     'https://github.com/duqcyxwd/stringbreaker.nvim',
 
     -- UI / Tools
@@ -90,10 +94,10 @@ local ist_hour = tonumber(os.date("!%H", os.time() + IST_OFFSET))
 if ist_hour >= 7 and ist_hour < 19 then
     vim.o.background = "dark"
     --vim.cmd.colorscheme("catppuccin-frappe")
-    vim.cmd.colorscheme("everforest")
+    vim.cmd.colorscheme("onenord")
 else
     vim.o.background = "dark"
-    vim.cmd.colorscheme("everforest")
+    vim.cmd.colorscheme("onenord")
 end
 
 -- Onehalf needs its vim/ subdirectory on rtp
@@ -101,17 +105,3 @@ local onehalf_path = vim.fn.stdpath('data') .. '/site/pack/core/opt/onehalf/vim'
 if vim.fn.isdirectory(onehalf_path) == 1 then
     vim.opt.rtp:append(onehalf_path)
 end
-
--- UUID helper
-local function generate_uuid()
-    local handle = io.popen("uuidgen | tr A-F a-f | tr -d '\\n'")
-    if not handle then return '' end
-    local uuid = handle:read("*a")
-    handle:close()
-    return uuid or ''
-end
-
-vim.keymap.set("n", "<leader>gu", function()
-    local uuid = generate_uuid()
-    vim.api.nvim_put({ uuid }, 'c', true, true)
-end, { desc = "Insert lowercase UUIDv4 from uuidgen" })

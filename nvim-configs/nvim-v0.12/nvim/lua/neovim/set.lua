@@ -10,6 +10,8 @@ vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
+vim.opt.autoread = true
+
 
 vim.opt.smartindent = true
 
@@ -54,8 +56,8 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevel = 99
 
 -- copy filepath
-vim.keymap.set("n", "<leader>fp", function()
-    local path = vim.fn.expand("%:p")
-    vim.fn.setreg("+", path)
-    print("Copied: " .. path)
-end, { desc = "Copy file path" })
+--vim.keymap.set("n", "<leader>cp", function()
+    --local path = vim.fn.expand("%:p")
+    --vim.fn.setreg("+", path)
+    --print("Copied: " .. path)
+--end, { desc = "Copy file path" })
