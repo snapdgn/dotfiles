@@ -36,11 +36,17 @@ vim.opt.updatetime = 50
 vim.opt.shortmess:append("c")
 
 
-vim.opt.list = true
+vim.opt.list = false
+--vim.opt.listchars = {
+    --tab = "→ ",
+    --trail = "•",
+    --nbsp = "␣",
+--}
 vim.opt.listchars = {
-    tab = "→ ",
+    tab = "│ ",
     trail = "•",
-    space = "·",
+    nbsp = "␣",
+    leadmultispace = "│   ",  -- a bar every 4 spaces of indent
 }
 
 --vim.opt.colorcolumn = "80"

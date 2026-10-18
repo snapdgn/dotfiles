@@ -9,7 +9,10 @@ autocmd('TextYankPost', {
     group = yank_group,
     pattern = '*',
     callback = function()
-        vim.highlight.on_yank({
+        -- vim.hl.hl_op (0.14+) replaced vim.hl.on_yank, which replaced
+        -- vim.highlight.on_yank (0.11).
+        local hl = vim.hl or vim.highlight
+        ;(hl.hl_op or hl.on_yank)({
             higroup = 'IncSearch',
             timeout = 40,
         })

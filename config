@@ -1,0 +1,34 @@
+#font-family = "Monospace"
+#font-family = "Zed Mono"
+#font-family = "Iosevka SS15"
+font-family = "Iosevka SS15"
+#font-family = "SF Pro"
+#font-family = "Iosevka Nerd Font Mono"
+#font-family = "Fira Mono"
+#font-family = "Google Sans Code"
+#font-family-italic = "Iosevka Custom Italic"
+#font-family-bold = "Iosevka Custom Bold"
+font-style = Regular
+##font-features = ss04
+font-size = 18
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+
+# Automatic dark/light switching
+#theme = dark:Rose Pine,light:Rose Pine Dawn
+
+# Or set individual themes
+#theme = Rose Pine
+#theme = Rose Pine Moon
+#theme = Rose Pine Dawn
+
+theme = catppuccin-frappe.conf
+#theme = obsidian-nord.conf
+#theme = kanagawa-wave.conf
+#theme = CarbonFox
+#theme = Ayu Mirage
+#theme = BluLocoDark
+#theme = light:rose-pine-dawn,dark:rose-pine
+#clipboard-read = allow
+#clipboard-write = allow

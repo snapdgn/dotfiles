@@ -9,24 +9,40 @@ config.enable_tab_bar = false
 --config.use_fancy_tab_bar = false
 --config.hide_tab_bar_if_only_one_tab = true
 
-config.initial_cols = 120
-config.initial_rows = 28
+config.initial_cols = 240
+config.initial_rows = 56
 
 -- Opacity + blur (macOS)
-config.window_background_opacity = 0.8
+config.window_background_opacity = 1.0
 config.macos_window_background_blur = 20
 
 -- Font settings
 config.font_size = 16
 config.font = wezterm.font_with_fallback({
-    "PlemolJP",
-    "Iosevka SS15",
+    --{ family = "Victor Mono", weight = "Medium" },
+    --"FiraCode Nerd Font",
+    --{ family = "Zed Plex Mono", weight = 450 },
+    "Iosevka Nerd Font",
     "BlexMono Nerd Font Mono",
-    "Zed Plex Mono",
+    "Lilex Nerd Font",
+    "Inconsolata Nerd Font",
+    "PragmataPro",
+    "Pragmasevka",
+    "Iosevka SS15",
+    "PlemolJP",
+    "NotoSans Nerd Font",
     "Fira Code",
     "Fira Mono",
     "DengXian",
 })
+
+---- Match Zed's line spacing: Zed uses font_size * 1.618 ("comfortable"),
+---- wezterm multiplies the font's natural 1.3em line height -> 1.618/1.3
+--config.line_height = 1.245
+
+---- Zed rasterizes via CoreText, which does no hinting; wezterm's FreeType
+---- hints by default, which snaps some stems thin and smears others.
+--config.freetype_load_flags = "NO_HINTING"
 
 config.window_decorations = "RESIZE"
 config.automatically_reload_config = true
@@ -57,21 +73,39 @@ end
 -- Dynamic theme based on IST time
 if is_daytime_ist() then
     --config.color_scheme = 'Everforest Light Medium (Gogh)'
+    --config.color_scheme = 'Everforest Dark Hard (Gogh)'
+    --config.color_scheme = 'Nord Light (Gogh)'
+    --config.color_scheme = 'Nord (Gogh)'
+    --config.color_scheme = 'Rosé Pine Moon (base16)'
+    --config.color_scheme = 'One Dark (Gogh)'
+    config.color_scheme = 'Everforest Dark (Gogh)'
+    --config.color_scheme = 'One Dark (Gogh)'
+    --config.color_scheme = 'Rosé Pine Dawn (base16)'
+    --config.color_scheme = 'rose-pine'
     --config.color_scheme = 'Everforest Light (Gogh)'
     --config.color_scheme = 'Gruvbox Material (Gogh)'
+    --config.color_scheme = 'Solarized Dark Higher Contrast'
     --config.color_scheme = "tokyonight_moon"
     --config.color_scheme = 'Google (light) (terminal.sexy)'
-    config.color_scheme = 'dayfox'
+    --config.color_scheme = 'Solarized (dark) (terminal.sexy)'
+    --config.color_scheme = 'nordfox'
+    --config.color_scheme = 'nord'
 else
-    config.color_scheme = 'nordfox'
+    --config.color_scheme = 'nord'
+    --config.color_scheme = 'Nord (Gogh)'
     --config.color_scheme = 'Nord Light (Gogh)'
     --config.color_scheme = 'Github Light (Gogh)'
+    --config.color_scheme = 'Solarized (dark) (terminal.sexy)'
     --config.color_scheme = 'Gruvbox Material (Gogh)'
     --config.color_scheme = 'Gruvbox light, medium (base16)'
     --config.color_scheme = 'Everforest Dark Hard (Gogh)'
     --config.color_scheme = 'Everforest Dark (Gogh)'
+    --config.color_scheme = 'rose-pine'
+    --config.color_scheme = 'Rosé Pine Moon (base16)'
+    config.color_scheme = 'One Dark (Gogh)'
     --config.color_scheme = 'Everforest Light Medium (Gogh)'
     --config.color_scheme = "tokyonight_moon"
+    --config.color_scheme = 'nordfox'
 end
 
 --config.color_scheme = 'Everforest Light (Gogh)'
