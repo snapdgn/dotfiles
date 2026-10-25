@@ -60,7 +60,6 @@ vim.pack.add({
     'https://github.com/lewis6991/gitsigns.nvim',
     'https://github.com/tpope/vim-fugitive',
     'https://github.com/sindrets/diffview.nvim',
-    'https://github.com/ThePrimeagen/git-worktree.nvim',
 
     -- Navigation
     { src = 'https://github.com/ThePrimeagen/harpoon',    version = 'harpoon2' },
