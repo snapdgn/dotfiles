@@ -245,10 +245,12 @@ local function to_items(wts, root)
     local items, width = {}, 0
     for _, wt in ipairs(wts) do
         if not wt.bare then
+            local name = vim.fs.basename(wt.path)
             local label = wt.branch or ("@" .. wt.head:sub(1, 7))
-            width = math.max(width, vim.api.nvim_strwidth(label))
+            width = math.max(width, vim.api.nvim_strwidth(name))
             items[#items + 1] = vim.tbl_extend("force", wt, {
-                text = label .. " " .. wt.path,
+                text = name .. " " .. label,
+                name = name,
                 label = label,
                 current = wt.path == root,
             })
@@ -267,8 +269,8 @@ local function format(item, picker)
     local room = (win:valid() and vim.api.nvim_win_get_width(win.win) or 80) - item.width - #tag - 5
     local ret = {}
     ret[#ret + 1] = item.current and { "● ", "SnacksPickerGitBranchCurrent" } or { "  " }
-    ret[#ret + 1] = { util.align(item.label, item.width, { truncate = true }), item.branch and "SnacksPickerGitBranch" or "SnacksPickerGitDetached" }
-    ret[#ret + 1] = { "  " .. util.truncate(vim.fn.fnamemodify(item.path, ":~"), room, true), "SnacksPickerDir" }
+    ret[#ret + 1] = { util.align(item.name, item.width, { truncate = true }), "SnacksPickerDirectory" }
+    ret[#ret + 1] = { "  " .. util.truncate(item.label, room), item.branch and "SnacksPickerDir" or "SnacksPickerGitDetached" }
     if tag ~= "" then ret[#ret + 1] = { tag, "SnacksPickerComment" } end
     return ret
 end
