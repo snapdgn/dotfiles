@@ -199,19 +199,43 @@ function M.create()
         if ok and picker and not picker.closed then picker:refresh() end
     end)
 
-    picker = Snacks.picker.git_branches({
-        all = true,
+    picker = Snacks.picker.pick({
         title = "Base branch",
         layout = { preset = "select" },
-        win = { input = { keys = { ["<c-a>"] = false, ["<c-x>"] = false } } },
+        -- for-each-ref only reads ref names (no commit objects), so huge repos list instantly
+        finder = function(_, ctx)
+            return require("snacks.picker.source.proc").proc(ctx:opts({
+                cmd = "git",
+                args = { "for-each-ref", "--format=%(HEAD)%(refname)", "refs/heads", "refs/remotes" },
+                cwd = root,
+                transform = function(item)
+                    local ref = item.text:sub(2)
+                    local remote, short = ref:match("^refs/remotes/([^/]+)/(.+)$")
+                    if short == "HEAD" then return false end
+                    item.current = item.text:sub(1, 1) == "*"
+                    item.remote, item.short = remote, short
+                    item.branch = remote and (remote .. "/" .. short) or ref:sub(#"refs/heads/" + 1)
+                    item.text = item.branch
+                end,
+            }), ctx)
+        end,
+        format = function(item)
+            local ret = { item.current and { "● ", "SnacksPickerGitBranchCurrent" } or { "  " } }
+            if item.remote then ret[#ret + 1] = { item.remote .. "/", "SnacksPickerDir" } end
+            ret[#ret + 1] = { item.short or item.branch, "SnacksPickerGitBranch" }
+            return ret
+        end,
+        on_show = function(p)
+            for i, item in ipairs(p:items()) do
+                if item.current then return p.list:view(i) end
+            end
+        end,
         confirm = function(p, item)
             p:close()
             if not item then return end
-            local base = item.branch and (item.branch:gsub("^remotes/", "")) or item.commit
-            local remote = item.branch and item.branch:match("^remotes/[^/]+/(.+)$")
-            Snacks.input({ prompt = "Branch (from " .. base .. ")", default = remote }, function(name)
+            Snacks.input({ prompt = "Branch (from " .. item.branch .. ")", default = item.short }, function(name)
                 name = vim.trim(name or "")
-                if name ~= "" then M.add(base, name, root) end
+                if name ~= "" then M.add(item.branch, name, root) end
             end)
         end,
     })
@@ -342,7 +366,7 @@ local status = ""
 
 function M.refresh_status()
     local root = toplevel()
-    status = root and linked(root) and ("󰙅 " .. vim.fs.basename(root)) or ""
+    status = root and linked(root) and "󰙅" or ""
 end
 
 function M.statusline()
