@@ -1,0 +1,40 @@
+onboarding = false
+
+[theme]
+name = "terminal"
+auto_switch = false
+
+# tmux-style keybindings with ctrl+a as prefix.
+# Press ctrl+a twice to send a literal ctrl+a to the pane.
+# Already tmux-like by default: c n p 1..9 x z ? [ (copy mode)
+[keys]
+prefix = "ctrl+a"
+
+# windows -> tabs
+rename_tab = "prefix+,"
+close_tab = "prefix+&"
+
+# panes
+split_vertical = "prefix+v"      # side by side (tmux split-window -h)
+split_horizontal = 'prefix+|'    # stacked (tmux split-window -v)
+cycle_pane_next = "prefix+o"
+last_pane = "prefix+;"
+focus_pane_left = ["prefix+left", "prefix+h"]
+focus_pane_down = ["prefix+down", "prefix+j"]
+focus_pane_up = ["prefix+up", "prefix+k"]
+focus_pane_right = ["prefix+right", "prefix+l"]
+resize_pane_left = ["prefix+ctrl+left", "prefix+alt+left"]
+resize_pane_down = ["prefix+ctrl+down", "prefix+alt+down"]
+resize_pane_up = ["prefix+ctrl+up", "prefix+alt+up"]
+resize_pane_right = ["prefix+ctrl+right", "prefix+alt+right"]
+
+# sessions -> workspaces
+workspace_picker = ["prefix+s", "prefix+w"]
+rename_workspace = "prefix+$"
+previous_workspace = "prefix+("
+next_workspace = "prefix+)"
+detach = "prefix+d"
+
+# herdr defaults moved off keys tmux uses (o, s)
+open_notification_target = "prefix+shift+o"
+settings = "prefix+shift+s"
