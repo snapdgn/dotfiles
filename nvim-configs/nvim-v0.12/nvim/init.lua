@@ -93,10 +93,10 @@ local ist_hour = tonumber(os.date("!%H", os.time() + IST_OFFSET))
 if ist_hour >= 7 and ist_hour < 19 then
     vim.o.background = "dark"
     --vim.cmd.colorscheme("catppuccin-frappe")
-    vim.cmd.colorscheme("onenord")
+    vim.cmd.colorscheme("everforest")
 else
     vim.o.background = "dark"
-    vim.cmd.colorscheme("onenord")
+    vim.cmd.colorscheme("everforest")
 end
 
 -- Onehalf needs its vim/ subdirectory on rtp
