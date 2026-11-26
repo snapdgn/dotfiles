@@ -23,12 +23,14 @@ shell-integration-features = no-cursor
 #theme = Rose Pine Moon
 #theme = Rose Pine Dawn
 
+#theme = Atelier Sulphurpool
+theme = Everforest Dark Soft
 #theme = catppuccin-frappe.conf
 #theme = catppuccin-latte.conf
 #theme = obsidian-nord.conf
 #theme = kanagawa-wave.conf
 #theme = CarbonFox
-theme = Ayu Mirage
+#theme = Ayu Mirage
 #theme = BluLocoDark
 #theme = light:rose-pine-dawn,dark:rose-pine
 #clipboard-read = allow
